@@ -28,7 +28,7 @@ import codesparser.SectionNumber;
 
 public class ConvertCAToHybridXML {
 	private static final Logger logger = Logger.getLogger(ConvertCAToHybridXML.class.getName());
-	private static final String DEBUGFILE = "bpc"; // null;	//"fam";
+	private static final String DEBUGFILE = null;	//"fam";
 	private static long globalsectioncount = 0;
 
 	public static void main(String[] args) throws Exception {
@@ -49,6 +49,11 @@ public class ConvertCAToHybridXML {
 				if ( pathname.isDirectory()) return false;
 				if (pathname.getName().toString().contains("constitution"))
 					return false;
+				if (!(
+						pathname.getName().toString().contains("bpc") ||
+						pathname.getName().toString().contains("ccp") ||
+						pathname.getName().toString().contains("civ") 
+					) ) return false;
 				if ( DEBUGFILE != null ) { 
 					if (!pathname.getName().toString().contains(DEBUGFILE)) return false;
 				}

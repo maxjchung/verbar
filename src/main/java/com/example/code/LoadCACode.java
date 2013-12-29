@@ -39,7 +39,7 @@ import codesparser.CodeRange;
 public class LoadCACode {
 
 	private static Logger logger = Logger.getLogger(LoadCACode.class.getName());
-	private static final String DEBUGFILE = "bpc"; // null; 	// "gov"; // "fam"; 
+	private static final String DEBUGFILE = null; 	// "gov"; // "fam"; 
 
 	private IndexWriter indexWriter;
 	private TaxonomyWriter taxoWriter;
@@ -103,6 +103,11 @@ public class LoadCACode {
 				if ( pathname.isDirectory() ) return false;
 				if (pathname.getName().toString().contains("constitution"))
 					return false;
+				if (!(
+						pathname.getName().toString().contains("bpc") ||
+						pathname.getName().toString().contains("ccp") ||
+						pathname.getName().toString().contains("civ") 
+					) ) return false;
 				if ( DEBUGFILE != null ) { 
 					if (!pathname.getName().toString().contains(DEBUGFILE)) return false;
 				}

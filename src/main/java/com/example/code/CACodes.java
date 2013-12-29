@@ -50,9 +50,9 @@ public class CACodes implements CodesInterface {
 	static {
 		mapCodeToTitles = new HashMap<String, CodeTitles> (); 
 		mapCodeToTitles.put( "CALIFORNIA BUSINESS AND PROFESSIONS CODE".toLowerCase(), new CodeTitles( "business", "Bus. & Professions") );
-/*		
 		mapCodeToTitles.put( "CALIFORNIA CODE OF CIVIL PROCEDURE".toLowerCase(), new CodeTitles( "procedure", "Civ. Procedure") );
 		mapCodeToTitles.put( "CALIFORNIA CIVIL CODE".toLowerCase(), new CodeTitles("civil", "Civil") );
+		/*		
 		mapCodeToTitles.put( "CALIFORNIA COMMERCIAL CODE".toLowerCase(), new CodeTitles( "commercial", "Commercial") );
 		mapCodeToTitles.put( "CALIFORNIA CORPORATIONS CODE".toLowerCase(), new CodeTitles( "corporations", "Corporations" ) );
 		mapCodeToTitles.put( "CALIFORNIA EDUCATION CODE".toLowerCase(), new CodeTitles( "education", "Education") );
@@ -92,9 +92,9 @@ public class CACodes implements CodesInterface {
 
 	public static final String[] patterns = {
             "business and professions code",
-  /*          "code of civil procedure",
+            "code of civil procedure",
             "civil code",
-            "commercial code",
+/*            "commercial code",
             "corporations code",
             "education code",
             "elections code",
@@ -137,9 +137,9 @@ public class CACodes implements CodesInterface {
 
     public static final String[] patternsAbvr = {
             "bus. & prof. code",
-/*            "code civ. proc.",
+            "code civ. proc.",
             "civ. code",
-            "com. code",
+/*            "com. code",
             "corp. code",
             "ed. code",
             "elec. code",
