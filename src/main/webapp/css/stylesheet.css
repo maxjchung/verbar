@@ -1,0 +1,67 @@
+html {
+height: 100%;
+}
+body {
+margin: 0;
+padding: 0;
+height: 100%;
+}
+.landscape, .landscape .ui-page, .portrait, .portrait .ui-page {
+min-height: 100%;
+}
+.outsidetable { background-color:white; color:black; }
+.codestable { background-color:white; color:black;  }
+.titlelisttable { background-color:white; color:black;  }
+.codelisttable { background-color:white; color:black;  }
+.sectiontext {
+	color: #552200;
+	font-family: 'MonaLisaSolidITCTT', 'Mona Lisa Solid ITC TT', 'MS Serif', serif;
+	background-color:white; 
+    font-size: 16px;
+}
+.termtext { 
+	color: #552200;
+	font-family: 'MonaLisaSolidITCTT', 'Mona Lisa Solid ITC TT', 'MS Serif', serif;
+	background-color:#552200; 
+	color:white;
+    font-size: 16px;
+}
+A:link {text-decoration: underline; color: #aa5500;}
+A:visited {text-decoration: underline; color: #aa5500;}
+A:active {text-decoration: underline; color: #aa5500;}
+A:hover {text-decoration: underline; color: #aa5500;}
+#header {
+	min-width: 797px;
+	position: relative;
+	padding-left: 800px;
+	float: left;
+	margin-left: -800px;
+	width: 100%;
+}
+.paragraph_style_1 {
+    color: #aa5500;
+    font-family: 'MonaLisaSolidITCTT', 'Mona Lisa Solid ITC TT', 'MS Serif', serif;
+    font-size: 26px;
+}
+.paragraph_style_2 {
+    color: #aa5500;
+    font-family: 'MonaLisaSolidITCTT', 'Mona Lisa Solid ITC TT', 'MS Serif', serif;
+    font-size: 17px;
+}
+.paragraph_style_3 {
+    color: #aa5500;
+    font-family: 'PerpetuaTitlingMT-Light', 'Perpetua Titling MT', 'HelveticaNeue', 'Helvetica Neue', 'Arial', sans-serif;
+    font-size: 20px; 
+}
+.style_4 {
+    color: #552200;
+	font-family: 'MonaLisaSolidITCTT', 'Mona Lisa Solid ITC TT', 'MS Serif', serif;
+    font-size: 16px;
+    text-align: left;
+}
+.style_5 {
+    color: #552200;
+	font-family: 'MonaLisaSolidITCTT', 'Mona Lisa Solid ITC TT', 'MS Serif', serif;
+    font-size: 16px;
+    text-align: left;
+}
