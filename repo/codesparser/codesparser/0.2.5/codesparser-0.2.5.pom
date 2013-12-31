@@ -4,5 +4,5 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>codesparser</groupId>
   <artifactId>codesparser</artifactId>
-  <version>0.2.4</version>
+  <version>0.2.5</version>
 </project>

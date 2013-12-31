@@ -31,12 +31,12 @@
         <dependency>
         	<groupId>scsb</groupId>
         	<artifactId>scsb</artifactId>
-        	<version>0.2.3</version>
+        	<version>0.2.4</version>
         </dependency>
         <dependency>
         	<groupId>codesparser</groupId>
         	<artifactId>codesparser</artifactId>
-        	<version>0.2.4</version>
+        	<version>0.2.5</version>
         </dependency>
         <dependency>
         	<groupId>junit</groupId>
@@ -62,7 +62,7 @@
         <dependency>
         	<groupId>exchange</groupId>
         	<artifactId>exchange</artifactId>
-        	<version>0.1.0</version>
+        	<version>0.1.1</version>
         </dependency>
         <dependency>
         	<groupId>org.jboss.resteasy</groupId>
