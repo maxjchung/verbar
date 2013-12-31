@@ -11,9 +11,8 @@ import org.junit.Test;
 
 import com.example.code.CACodes;
 
+import exchange.Exchange;
 import scsb.SCSB;
-import scsb.SCSB.Exchange;
-
 
 public class CAAppTest {
 	Logger logger = Logger.getLogger(CAAppTest.class.getName());
@@ -92,7 +91,7 @@ public class CAAppTest {
         assertEquals( exchange.subcodeList.size(), 0 );
         // if this below fails its an indication that the comparison test is SCSB.processTerm() is broken
         assertEquals( exchange.sectionTextList.size(), 1 );
-        assertEquals( exchange.sectionTextList.get(0).getText().length(), 314 );
+        assertEquals( exchange.sectionTextList.get(0).text.length(), 314 );
 
     	exchange = scsb.getExchange( 5, "", "civil-0|civil-1-0", false, true, false );
     	exchange.codesAvailable.get(1).selected = true;
@@ -213,7 +212,7 @@ public class CAAppTest {
         assertEquals( exchange.subcodeList.size(), 0 );
         // if this below fails its an indication that the comparison test is SCSB.processTerm() is broken
         assertEquals( exchange.sectionTextList.size(), 11 );
-        assertEquals( exchange.sectionTextList.get(3).getText().length() , 1868 );
+        assertEquals( exchange.sectionTextList.get(3).text.length() , 1868 );
 
     	exchange = scsb.getExchange( 4, "\"responsibility of the owner\"", "civil-0|civil-1-6|civil-2-1|civil-3-2|civil-4-1", true, false, false );
     	exchange.codesAvailable.get(1).selected = true;
@@ -231,8 +230,8 @@ public class CAAppTest {
         // if this below fails its an indication that the comparison test is SCSB.processTerm() is broken
         assertEquals( exchange.sectionTextList.size(), 11 );
         // This is testing that the "No Terms Found." is appearing.
-        assertEquals( exchange.sectionTextList.get(0).getText().length() , 20 );
-        assertEquals( exchange.sectionTextList.get(8).getText().length() , 1130 );
+        assertEquals( exchange.sectionTextList.get(0).text.length() , 20 );
+        assertEquals( exchange.sectionTextList.get(8).text.length() , 1130 );
 
         scsb.destroy();
 

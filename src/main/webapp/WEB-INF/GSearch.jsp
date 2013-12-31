@@ -10,13 +10,9 @@
 <title>Guided Code Search</title>
 </head>
 <body>
-<jsp:useBean id="model" type="com.example.model.SearchModel" scope="request" />
+<jsp:useBean id="model" type="com.example.model.GSearchModel" scope="request" />
 <!-- full page table -->
 <form method="post">
-<input type="hidden" name="currentstate" value="<% out.print( model.exchange.state ); %>" />
-<input type="hidden" name="currentpath" value="<% out.print( model.exchange.path ); %>" />
-<input type="hidden" name="currentterm" value="<% out.print( model.exchange.term ); %>" />
-<input type="hidden" name="highlights" value="<% out.print( model.exchange.highlights?"true":"false" ); %>" />
 <table width="100%" bgcolor="black" cellpadding="0" cellspacing="0" border="0" height="100%" >
 <tr height="40px">
 	<td valign="bottom" align="center" height="100%" width="150px" bgcolor="#EFE4B0">
@@ -45,7 +41,7 @@
 			<span style="padding-bottom: 0pt; padding-top: 0pt;" class="paragraph_style_2">&nbsp;</span>
 			<br>
 			<hr>
-			<input type="text" name="newterm" id="myInput" style="width: 145px;" class="style_4" value="<% out.print( model.exchange.term ); %>" />
+			<input type="text" name="newterm" id="myInput" style="width: 145px;" class="style_4" value="" />
 			<br><br style="line-height: 8px" >
 			<input type="submit" value="Search" style="width: 150px;" class="style_4" /><br>
 			<hr>

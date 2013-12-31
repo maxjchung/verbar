@@ -1,7 +1,7 @@
 package com.example.servlet;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import javax.servlet.RequestDispatcher;
@@ -10,27 +10,36 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 
-import com.example.code.CACodes;
-import com.example.model.SearchModel;
+import com.example.model.GSearchModel;
 
-import scsb.SCSB;
+import exchange.CodeAvailable;
+import exchange.Exchange;
+import exchange.ListEntry;
+import exchange.PathListEntry;
+import exchange.TextEntry;
 
 /**
  * Servlet implementation class Search
  * 
  */
-public class Search extends HttpServlet {
-	private static final Logger logger = Logger.getLogger(Search.class.getName());
+public class GSearch extends HttpServlet {
+	private static final Logger logger = Logger.getLogger(GSearch.class.getName());
 
 	private static final long serialVersionUID = 1L;
 	
-	private SCSB scsb;
+	private Exchange exchange;
+	private Client client;
 
 	/**
      * @see HttpServlet#HttpServlet()
      */
-    public Search() {
+    public GSearch() {
         super();
     }
 
@@ -39,18 +48,10 @@ public class Search extends HttpServlet {
     	super.init();
 		ServletContext context = getServletContext();
 		synchronized(this) {
-			scsb = (SCSB)context.getAttribute("scsb");
-			if ( scsb == null ) {
-				try {
-					
-					File xmlCodes = new File(Search.class.getResource("/xmlcodes").getFile()); 
-					File index = new File(Search.class.getResource("/index").getFile()); 
-					File indexTaxo = new File(Search.class.getResource("/indextaxo").getFile());
-					scsb = new SCSB(new CACodes(), xmlCodes, index, indexTaxo);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-		        context.setAttribute("scsb", scsb);
+			client = (Client)context.getAttribute("client");
+			if ( client == null ) {
+				client = ClientBuilder.newBuilder().build();
+		        context.setAttribute("client", client);
 			}
 		}
     }
@@ -58,30 +59,44 @@ public class Search extends HttpServlet {
     @Override
     public void destroy() {
     	super.destroy();
-    	try {
-    		scsb.destroy();
-		} catch (IOException e) {
-			throw new RuntimeException( e );
-		}
+		client.close();
     }
     
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		process(request);
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/Search.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/GSearch.jsp");
 		dispatcher.forward(request, response);
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		process(request);
-		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/Search.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/GSearch.jsp");
 		dispatcher.forward(request, response);
 	}
 	
 	private void process( HttpServletRequest request ) throws IOException {
 		// This is the CONTROLLER logic
+		if ( exchange == null ) {
+			ServletContext context = getServletContext();
+			synchronized(this) {
+				exchange = (Exchange)context.getAttribute("exchange");
+				if ( exchange == null ) {
+					try {
+				        WebTarget target = client.target("http://localhost:8080/rest/newexchange");
+				        exchange = target.request(MediaType.APPLICATION_XML).get(Exchange.class);
+						if ( exchange.codesAvailable == null ) exchange.codesAvailable = new ArrayList<CodeAvailable>();
+						if ( exchange.selectedCodesList == null ) exchange.selectedCodesList = new ArrayList<ListEntry>();
+						if ( exchange.pathList == null ) exchange.pathList = new ArrayList<PathListEntry>();
+						if ( exchange.subcodeList == null ) exchange.subcodeList = new ArrayList<ListEntry>();
+						if ( exchange.sectionTextList == null ) exchange.sectionTextList = new ArrayList<TextEntry>();
+						
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+			        context.setAttribute("exchange", exchange);
+				}
+			}
+		}
 
 		// The purpose of this class is to retrieve all the parameters that
 		// are stored in the view and put them into the exchange structure
@@ -129,8 +144,8 @@ public class Search extends HttpServlet {
 		highlights = highString.compareTo("true")==0;
 		toggle = request.getParameter("toggle")==null?false:true;
 
-		SearchModel model = new SearchModel(
-			scsb, 
+		GSearchModel model = new GSearchModel(
+			exchange, 
 			currentstate, 
 			currentterm, 
 			newterm, 
@@ -162,13 +177,20 @@ public class Search extends HttpServlet {
 		logger.fine("1: Path = " + model.exchange.path + ": Term = " + model.exchange.term + ": isAllSelected = " + model.allSelected );
 		// store the output for the VIEW
 		
-		model.handleRequest();
+        WebTarget target = client.target("http://localhost:8080/rest/search");
+        Entity<Exchange> entity = Entity.entity(model.exchange, MediaType.APPLICATION_XML);
+        exchange = target.request(MediaType.APPLICATION_XML).post(entity, Exchange.class);
+		//
+		if ( exchange.codesAvailable == null ) exchange.codesAvailable = new ArrayList<CodeAvailable>();
+		if ( exchange.selectedCodesList == null ) exchange.selectedCodesList = new ArrayList<ListEntry>();
+		if ( exchange.pathList == null ) exchange.pathList = new ArrayList<PathListEntry>();
+		if ( exchange.subcodeList == null ) exchange.subcodeList = new ArrayList<ListEntry>();
+		if ( exchange.sectionTextList == null ) exchange.sectionTextList = new ArrayList<TextEntry>();
 
-//model.exchange.term.
-		request.setAttribute("model", model );
+        model.exchange = exchange;
+        
+        request.setAttribute("model", model );
 
-		logger.fine("2: Browse = " + model.exchange.browse + ": State = " + model.exchange.state );
-		logger.fine("2: Path = " + model.exchange.path + ": Term = " + model.exchange.term + ": isSelectAll = " + model.allSelected );
 	}
-
+	
 }

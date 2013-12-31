@@ -2,18 +2,16 @@ package com.example.model;
 
 import java.io.IOException;
 
-import exchange.Exchange;
 import scsb.SCSB;
+import exchange.Exchange;
 
-public class SearchModel {
+public class GSearchModel {
 
 	public Exchange exchange;
-	private SCSB scsb;
-	// working var ...
 	public boolean allSelected;
-		
-	public SearchModel(
-		SCSB scsb, 
+	
+	public GSearchModel(
+		Exchange exchange, 
 		String currentstate, 
 		String currentterm, 
 		String newterm, 
@@ -25,8 +23,9 @@ public class SearchModel {
 		boolean allselected, 
 		boolean highlights, 
 		boolean toggle
-		) throws IOException {
-		this.scsb = scsb;
+	) throws IOException {
+		this.exchange = exchange;
+		
 		int state = Integer.parseInt(currentstate);
 		// determine if the term has changed ..
 		String term = currentterm;
@@ -56,20 +55,14 @@ public class SearchModel {
 
 		if ( toggle ) highlights = !highlights;
 		
-		exchange = scsb.getExchange(
-			state, 
-			term, 
-			path, 
-			changepath, 
-			browse, 
-			highlights
-		);
+		exchange.state = state;
+		exchange.term = term;
+		exchange.path = path;
+		exchange.changepath = changepath;
+		exchange.browse = browse;
+		exchange.highlights = highlights;
 	}
-	
-	public void handleRequest() throws IOException {
-		scsb.handleRequest( exchange );		
-	}
-	
+
 	/*
 	 * Definitely need to fix this up ... 
 	 */

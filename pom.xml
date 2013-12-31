@@ -59,6 +59,21 @@
         	<artifactId>lucene-highlighter</artifactId>
         	<version>4.5.1</version>
         </dependency>
+        <dependency>
+        	<groupId>exchange</groupId>
+        	<artifactId>exchange</artifactId>
+        	<version>0.1.0</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.jboss.resteasy</groupId>
+        	<artifactId>resteasy-jaxb-provider</artifactId>
+        	<version>3.0.6.Final</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.jboss.resteasy</groupId>
+        	<artifactId>resteasy-client</artifactId>
+        	<version>3.0.6.Final</version>
+        </dependency>
     </dependencies>
 
     <build>
