@@ -96,6 +96,12 @@ public class GSearch extends HttpServlet {
 			        context.setAttribute("exchange", exchange);
 				}
 			}
+		} else {
+			exchange.selectedCodesList = new ArrayList<ListEntry>();
+			exchange.pathList = new ArrayList<PathListEntry>();
+			exchange.subcodeList = new ArrayList<ListEntry>();
+			exchange.sectionTextList = new ArrayList<TextEntry>();
+			
 		}
 
 		// The purpose of this class is to retrieve all the parameters that
