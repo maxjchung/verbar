@@ -35,6 +35,7 @@ public class GSearch extends HttpServlet {
 	
 	private Exchange exchange;
 	private Client client;
+	private String urlRoot;
 
 	/**
      * @see HttpServlet#HttpServlet()
@@ -53,6 +54,9 @@ public class GSearch extends HttpServlet {
 				client = ClientBuilder.newBuilder().build();
 		        context.setAttribute("client", client);
 			}
+		}
+		if ( (urlRoot = System.getenv("URL_ROOT")) == null ) {
+			urlRoot = "http://localhost:8080/";
 		}
     }
 
@@ -82,7 +86,7 @@ public class GSearch extends HttpServlet {
 				exchange = (Exchange)context.getAttribute("exchange");
 				if ( exchange == null ) {
 					try {
-				        WebTarget target = client.target("http://localhost:8080/rest/newexchange");
+				        WebTarget target = client.target(urlRoot + "rest/newexchange");
 				        exchange = target.request(MediaType.APPLICATION_XML).get(Exchange.class);
 						if ( exchange.codesAvailable == null ) exchange.codesAvailable = new ArrayList<CodeAvailable>();
 						if ( exchange.selectedCodesList == null ) exchange.selectedCodesList = new ArrayList<ListEntry>();
@@ -183,7 +187,7 @@ public class GSearch extends HttpServlet {
 		logger.fine("1: Path = " + model.exchange.path + ": Term = " + model.exchange.term + ": isAllSelected = " + model.allSelected );
 		// store the output for the VIEW
 		
-        WebTarget target = client.target("http://localhost:8080/rest/search");
+        WebTarget target = client.target(urlRoot + "rest/search");
         Entity<Exchange> entity = Entity.entity(model.exchange, MediaType.APPLICATION_XML);
         exchange = target.request(MediaType.APPLICATION_XML).post(entity, Exchange.class);
 		//
