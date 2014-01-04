@@ -1,5 +1,7 @@
 package com.example.code;
 
+import gsearch.CodesInterface;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -23,7 +25,6 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import scsb.CodesInterface;
 import codesparser.Code;
 import codesparser.CodeReference;
 import codesparser.SectionNumber;
@@ -183,7 +184,7 @@ public class CACodes implements CodesInterface {
 	 * 270-273.5 includes 273a. The file 273.8-273.88 does not include 273a.
 	 * I don't know if there are other situations where this is reversed ... 
 	 * I should write a utility to check everything. See ConvertToHybridXML in the
-	 * SCSB project.
+	 * GSearch project.
 	 * ...
 	 * ok, there's more. The second numerical element of the section number is not ordered numberically, but lexically.
 	 * so .. 422.865 comes before 422.88

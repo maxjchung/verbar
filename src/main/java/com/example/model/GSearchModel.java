@@ -2,51 +2,38 @@ package com.example.model;
 
 import java.io.IOException;
 
-import scsb.SCSB;
-import exchange.Exchange;
+import gsearch.exchange.*;
 
 public class GSearchModel {
 
 	public Exchange exchange;
 	public boolean allSelected;
-	
+
 	public GSearchModel(
-		Exchange exchange, 
-		String currentstate, 
 		String currentterm, 
 		String newterm, 
 		String currentpath, 
 		String newpath, 
-		boolean browse, 
 		boolean selectall, 
 		boolean unselectall, 
 		boolean allselected, 
 		boolean highlights, 
 		boolean toggle
 	) throws IOException {
-		this.exchange = exchange;
+
+		this.exchange = new Exchange();
 		
-		int state = Integer.parseInt(currentstate);
 		// determine if the term has changed ..
 		String term = currentterm;
 		if ( !currentterm.equalsIgnoreCase(newterm) ) {
 			term = newterm;
-			// special case to spoof browse
-			if ( !newterm.isEmpty() && state == SCSB.STATE_ONE ) {
-				browse = true;
-			}
 		}
 	
 		// determine if there is a change path request ..
-		boolean changepath = false;
 		String path = currentpath;
 		if ( !newpath.isEmpty() ) {
 			path = newpath;
-			changepath = true;
 		}
-		
-		// or if we want to simulate one due to selectall 
-		if ( selectall == true  ) browse = true;
 		
 		// set an stateflag for the view (Search.jsp)
 		if ( selectall == true || (allselected == true && unselectall != true ) ) {
@@ -55,11 +42,8 @@ public class GSearchModel {
 
 		if ( toggle ) highlights = !highlights;
 		
-		exchange.state = state;
 		exchange.term = term;
 		exchange.path = path;
-		exchange.changepath = changepath;
-		exchange.browse = browse;
 		exchange.highlights = highlights;
 	}
 

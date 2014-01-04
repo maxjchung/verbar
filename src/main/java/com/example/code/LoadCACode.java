@@ -1,6 +1,9 @@
 package com.example.code;
 
 
+import gsearch.load.LuceneCodeModel;
+import gsearch.load.LuceneSectionModel;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
@@ -28,8 +31,6 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
-import scsb.load.LuceneCodeModel;
-import scsb.load.LuceneSectionModel;
 import codesparser.Code;
 import codesparser.CodeReference;
 import codesparser.Section;

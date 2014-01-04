@@ -1,31 +1,24 @@
 package com.example.servlet;
 
+import gsearch.exchange.CodeAvailable;
+import gsearch.exchange.Exchange;
+import gsearch.exchange.ListEntry;
+import gsearch.exchange.PathListEntry;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.example.model.GSearchModel;
 
-import exchange.CodeAvailable;
-import exchange.Exchange;
-import exchange.ListEntry;
-import exchange.PathListEntry;
-import exchange.TextEntry;
-
 /**
- * Servlet implementation class Search
+ * Servlet implementation class GSearch
  * 
  */
 public class GSearch extends HttpServlet {
@@ -33,7 +26,6 @@ public class GSearch extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Exchange exchange;
 	private Client client;
 	private String urlRoot;
 
@@ -79,38 +71,8 @@ public class GSearch extends HttpServlet {
 	}
 	
 	private void process( HttpServletRequest request ) throws IOException {
-		// This is the CONTROLLER logic
-		if ( exchange == null ) {
-			ServletContext context = getServletContext();
-			synchronized(this) {
-				exchange = (Exchange)context.getAttribute("exchange");
-				if ( exchange == null ) {
-					try {
-				        WebTarget target = client.target(urlRoot + "rest/newexchange");
-				        exchange = target.request(MediaType.APPLICATION_XML).get(Exchange.class);
-						if ( exchange.codesAvailable == null ) exchange.codesAvailable = new ArrayList<CodeAvailable>();
-						if ( exchange.selectedCodesList == null ) exchange.selectedCodesList = new ArrayList<ListEntry>();
-						if ( exchange.pathList == null ) exchange.pathList = new ArrayList<PathListEntry>();
-						if ( exchange.subcodeList == null ) exchange.subcodeList = new ArrayList<ListEntry>();
-						if ( exchange.sectionTextList == null ) exchange.sectionTextList = new ArrayList<TextEntry>();
-						
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
-			        context.setAttribute("exchange", exchange);
-				}
-			}
-		} else {
-			exchange.selectedCodesList = new ArrayList<ListEntry>();
-			exchange.pathList = new ArrayList<PathListEntry>();
-			exchange.subcodeList = new ArrayList<ListEntry>();
-			exchange.sectionTextList = new ArrayList<TextEntry>();
-			
-		}
-
 		// The purpose of this class is to retrieve all the parameters that
 		// are stored in the view and put them into the exchange structure
-		String currentstate;
 		String currentterm;
 		String currentpath;
 		String newterm;
@@ -122,10 +84,6 @@ public class GSearch extends HttpServlet {
 		boolean highlights;
 		boolean toggle;
 		
-		// retrieve all possible parameters from request		
-		currentstate = request.getParameter("currentstate");
-		if ( currentstate == null ) currentstate = "1";
-
 		currentterm = request.getParameter("currentterm");
 		if ( currentterm == null ) currentterm = "";
 
@@ -139,9 +97,8 @@ public class GSearch extends HttpServlet {
 		if ( newterm == null ) newterm = "";
 
 		browse = request.getParameter("browse")==null?false:true;
-		
 
-		// select all logic is not part of SCSB
+		// select all logic is not part of GSearch
 		// so deal with it here .. 
 		// by defaults, all the exchange.codesAvailable are not selected, 
 		// so selected any that need to be selected only if we need to
@@ -153,15 +110,12 @@ public class GSearch extends HttpServlet {
 		if ( highString == null ) highString = "";
 		highlights = highString.compareTo("true")==0;
 		toggle = request.getParameter("toggle")==null?false:true;
-
+		
 		GSearchModel model = new GSearchModel(
-			exchange, 
-			currentstate, 
 			currentterm, 
 			newterm, 
 			currentpath, 
 			newpath, 
-			browse, 
 			selectall,
 			unselectall, 
 			allselected, 
@@ -169,35 +123,58 @@ public class GSearch extends HttpServlet {
 			toggle
 		);
 		
+		StringBuilder selectedCodes = new StringBuilder();
+		model.exchange.codeselect = null;
 		if ( selectall || (allselected && !unselectall) ) {
 			for ( int i=0, l=model.exchange.codesAvailable.size(); i<l; ++i ) {
-				model.exchange.codesAvailable.get(i).selected = true;
+				selectedCodes.append('1');
 			}
-		} else if ( !unselectall ) {
-			// if all not selected, then copy the current state
-			// but if the user clicked unselect all, then leave the array empty
-			for ( int i=0, l=model.exchange.codesAvailable.size(); i<l; ++i ) {
-				if ( request.getParameter(model.exchange.codesAvailable.get(i).fullFacet) != null ) {
-					model.exchange.codesAvailable.get(i).selected = true;
-				}			
+			model.exchange.codeselect = selectedCodes.toString();
+		} else if ( unselectall ) {
+			model.exchange.codeselect = null;
+			model.exchange.path = null;
+		} else if ( browse ) {
+			if (model.exchange.codeselect == null && model.exchange.path == null ) {
+				// if all not selected, then copy the current state
+				// but if the user clicked unselect all, then leave the array empty
+				for ( int i=0, l=model.exchange.codesAvailable.size(); i<l; ++i ) {
+					if ( request.getParameter(model.exchange.codesAvailable.get(i).fullFacet) != null ) {
+						selectedCodes.append('1');
+					} else {
+						selectedCodes.append('0');
+					}
+				}
+				model.exchange.codeselect = selectedCodes.toString();
+			} else {
+				model.exchange.codeselect = null;
+				model.exchange.path = null;
 			}
 		}
+		
 		// process the requests with in the MODEL
-		logger.fine("1: Browse = " + model.exchange.browse + ": State = " + model.exchange.state );
 		logger.fine("1: Path = " + model.exchange.path + ": Term = " + model.exchange.term + ": isAllSelected = " + model.allSelected );
+		logger.fine("1: selectedCodes = " + model.exchange.codeselect);
 		// store the output for the VIEW
 		
-        WebTarget target = client.target(urlRoot + "rest/search");
-        Entity<Exchange> entity = Entity.entity(model.exchange, MediaType.APPLICATION_XML);
-        exchange = target.request(MediaType.APPLICATION_XML).post(entity, Exchange.class);
 		//
+		Response response = client.target(urlRoot + "rest/search")
+		    	.queryParam("codeselect", model.exchange.codeselect)
+		    	.queryParam("path", model.exchange.path)
+		    	.queryParam("term", model.exchange.term)
+		    	.queryParam("highlights", model.exchange.highlights)
+				.request(MediaType.APPLICATION_XML).get();
+		Exchange exchange = response.readEntity(Exchange.class);
+		
 		if ( exchange.codesAvailable == null ) exchange.codesAvailable = new ArrayList<CodeAvailable>();
-		if ( exchange.selectedCodesList == null ) exchange.selectedCodesList = new ArrayList<ListEntry>();
 		if ( exchange.pathList == null ) exchange.pathList = new ArrayList<PathListEntry>();
+		if ( exchange.selectedCodesList == null ) exchange.selectedCodesList = new ArrayList<ListEntry>();
 		if ( exchange.subcodeList == null ) exchange.subcodeList = new ArrayList<ListEntry>();
-		if ( exchange.sectionTextList == null ) exchange.sectionTextList = new ArrayList<TextEntry>();
+		if ( exchange.path == null ) exchange.path = "";
+		if ( exchange.term == null ) exchange.term = "";
 
         model.exchange = exchange;
+		logger.fine("2: Path = " + model.exchange.path + ": Term = " + model.exchange.term + ": isAllSelected = " + model.allSelected );
+		logger.fine("2: selectedCodes = " + model.exchange.codeselect);
         
         request.setAttribute("model", model );
 

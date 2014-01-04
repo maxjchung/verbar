@@ -13,6 +13,10 @@
 <jsp:useBean id="model" type="com.example.model.GSearchModel" scope="request" />
 <!-- full page table -->
 <form method="post">
+<input type="hidden" name="currentselection" value="<% out.print( model.exchange.codeselect ); %>" />
+<input type="hidden" name="currentpath" value="<% out.print( model.exchange.path ); %>" />
+<input type="hidden" name="currentterm" value="<% out.print( model.exchange.term ); %>" />
+<input type="hidden" name="highlights" value="<% out.print( model.exchange.highlights?"true":"false" ); %>" />
 <table width="100%" bgcolor="black" cellpadding="0" cellspacing="0" border="0" height="100%" >
 <tr height="40px">
 	<td valign="bottom" align="center" height="100%" width="150px" bgcolor="#EFE4B0">
@@ -71,7 +75,7 @@
 			<td valign="top" align="left" width="11px" height="100%">&nbsp;</td>
 			<td valign="top" align="left" width="100%">
 			<!-- START CENTER DISPLAY -->
-<% if ( model.exchange.state == 1 ) { %>
+<% if ( model.exchange.codesAvailable != null ) { %>
 <table class="codestable" width="100%">
 <%   for (int i=0, l=model.exchange.codesAvailable.size(); i<l; ++i) { 
        if (i % 3 == 0) { %>
@@ -101,7 +105,7 @@
     } 
   } %>
 <!-- Start view of states 2, 3, and 4 -->
-<% if ( model.exchange.state == 2 || model.exchange.state == 3 || model.exchange.state == 4 || model.exchange.state == 5 ) { %>
+<% if ( model.exchange.selectedCodesList != null ) { %>
 <table class="titlelisttable" width="100%">
 <% for (int i=0, l=model.exchange.selectedCodesList.size(); i<l; ++i) { %>
 <tr align="left">
@@ -174,7 +178,7 @@
 </tr>
 <% } // end of state 2, 3, or 4 %>
 </table>
-<% if ( model.exchange.state == 5 || model.exchange.highlights )  { // start of state == 5 %>
+<% if ( model.exchange.sectionTextList != null )  { // start of state == 5 %>
 <pre ><span class="sectiontext"><% 	for (int i=0,l=model.exchange.sectionTextList.size(); i<l; ++i) {
 	out.print( model.highlightText(model.exchange.sectionTextList.get(i).text, model.exchange.term, "<span class=\"termtext\">", "</span>") + "<br><br>" );
 	} %></span>

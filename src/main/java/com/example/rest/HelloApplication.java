@@ -13,7 +13,7 @@ public class HelloApplication extends Application
     public HelloApplication() throws Exception {
         // ADD YOUR RESTFUL RESOURCES HERE
         this.singletons.add(new Hello());
-        this.singletons.add(new GuidedLegal());
+        this.singletons.add(new GuidedSearch());
     }
 
     public Set<Class<?>> getClasses()

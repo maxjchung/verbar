@@ -13,13 +13,13 @@
   </listener>
   <servlet>
     <description></description>
-    <display-name>Search</display-name>
-    <servlet-name>Search</servlet-name>
-    <servlet-class>com.example.servlet.Search</servlet-class>
+    <display-name>GSearch</display-name>
+    <servlet-name>GSearch</servlet-name>
+    <servlet-class>com.example.servlet.GSearch</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>Search</servlet-name>
-    <url-pattern>/Search</url-pattern>
+    <servlet-name>GSearch</servlet-name>
+    <url-pattern>/GSearch</url-pattern>
   </servlet-mapping>
   <servlet>
     <description>Process codes directory and update indexes</description>
@@ -46,15 +46,5 @@
   <servlet-mapping>
     <servlet-name>Resteasy</servlet-name>
     <url-pattern>/rest/*</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>GSearch</display-name>
-    <servlet-name>GSearch</servlet-name>
-    <servlet-class>com.example.servlet.GSearch</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>GSearch</servlet-name>
-    <url-pattern>/GSearch</url-pattern>
   </servlet-mapping>
 </web-app>
