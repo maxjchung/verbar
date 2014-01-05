@@ -13,7 +13,7 @@
 <jsp:useBean id="model" type="com.example.model.GSearchModel" scope="request" />
 <!-- full page table -->
 <form method="post">
-<input type="hidden" name="currentselection" value="<% out.print( model.exchange.codeselect ); %>" />
+<input type="hidden" name="currentstate" value="<% out.print( model.exchange.state ); %>" />
 <input type="hidden" name="currentpath" value="<% out.print( model.exchange.path ); %>" />
 <input type="hidden" name="currentterm" value="<% out.print( model.exchange.term ); %>" />
 <input type="hidden" name="highlights" value="<% out.print( model.exchange.highlights?"true":"false" ); %>" />
@@ -75,17 +75,17 @@
 			<td valign="top" align="left" width="11px" height="100%">&nbsp;</td>
 			<td valign="top" align="left" width="100%">
 			<!-- START CENTER DISPLAY -->
-<% if ( model.exchange.codesAvailable != null ) { %>
+<% if ( model.exchange.state.equals("START") ) { %>
 <table class="codestable" width="100%">
-<%   for (int i=0, l=model.exchange.codesAvailable.size(); i<l; ++i) { 
+<%  for (int i=0, l=model.exchange.codesAvailable.size(); i<l; ++i) { 
        if (i % 3 == 0) { %>
 <tr>
 <%     } %>
-<td><input type="checkbox" name="<%out.print(model.exchange.codesAvailable.get(i).fullFacet);%>" <%if (model.exchange.codesAvailable.get(i).selected) out.print("checked=\"checked\" ");%>/><span class="style_5"><% out.print(model.exchange.codesAvailable.get(i).title); %></span></td>
+<td><input type="checkbox" name="<%out.print(model.exchange.codesAvailable.get(i).fullFacet);%>FACET" <%if (model.exchange.codesAvailable.get(i).selected) out.print("checked=\"checked\" ");%>/><span class="style_5"><% out.print(model.exchange.codesAvailable.get(i).title); %></span></td>
 <%     if (i % 3 == 2) { %>
 </tr>
-<%     } %> 
-<%  }%>
+<%     } 
+	}%> 
 <%   if ( model.allSelected ) { %>
 <td><input type="checkbox" name="unselectall" onchange="submit();"><span class="style_5"><b>UNSELECT ALL</b></span><input type="hidden" name="allselected" /></td>
 <%   } else {%>
@@ -93,28 +93,19 @@
 <%   }%>
 </tr>
 </table>
-<% } else { // if note state == 1 then preserve the selectedCodes in hidden inputs
-    if ( model.allSelected ) { // if select all, then simply save that %>
-<input type="hidden" name="allselected" />
-<%  } else { // else save each code-state individually
-      for (int i=0, l=model.exchange.codesAvailable.size(); i<l; ++i) { 
-        if (model.exchange.codesAvailable.get(i).selected) { %>
-<input type="hidden" name="<%out.print(model.exchange.codesAvailable.get(i).fullFacet);%>" />
-<%      } 
-      } 
-    } 
-  } %>
+<% } 
+%>
 <!-- Start view of states 2, 3, and 4 -->
-<% if ( model.exchange.selectedCodesList != null ) { %>
+<% if ( !model.exchange.state.equals("START") ) { %>
 <table class="titlelisttable" width="100%">
 <% for (int i=0, l=model.exchange.selectedCodesList.size(); i<l; ++i) { %>
 <tr align="left">
 <td style="white-space: nowrap; text-align: right;" class="style_5">
 <% if ( !model.exchange.term.isEmpty() ) { 
-	out.print( "" + model.exchange.selectedCodesList.get(i).count + " IN ");
-} else {
-	out.print( "&nbsp;");
-} %>
+		out.print( "" + model.exchange.selectedCodesList.get(i).count + " IN ");
+	} else {
+		out.print( "&nbsp;");
+	} %>
 </td>
 <td style="white-space: nowrap" >
 <button name="newpath" value="<%out.print(model.exchange.selectedCodesList.get(i).fullFacet);%>" class="style_5">
@@ -141,19 +132,17 @@
 <button name="newpath" value="<%out.print(model.exchange.pathList.get(i).fullFacet);%>"  class="style_5">
 <% out.print(model.exchange.pathList.get(i).part + "-" + model.exchange.pathList.get(i).partNumber ); %>
 </button>
-<% }  %>
+<% } %>
 </td>
-<td align="left" style="white-space: nowrap" class="style_5">
-<% out.print( "["  + model.exchange.pathList.get(i).codeRange + "]" ); %></td>
-<td align="left" width="100%" class="style_5">
-<% out.print( model.exchange.pathList.get(i).title ); %></td>
+<td align="left" style="white-space: nowrap" class="style_5"><% out.print( "["  + model.exchange.pathList.get(i).codeRange + "]" ); %></td>
+<td align="left" width="100%" class="style_5"><% out.print( model.exchange.pathList.get(i).title ); %></td>
 </tr>
 <% } %>
 </table>
 <% } %>
 <hr>
 <table class="codelisttable">
-<% for (int i=0, l=model.exchange.subcodeList.size(); i < l; ++i) { %>
+<%  for (int i=0, l=model.exchange.subcodeList.size(); i < l; ++i) { %>
 <tr>
 <td style="white-space: nowrap; text-align: right;" class="style_5">
 <% if ( !model.exchange.term.isEmpty() ) { 
@@ -176,14 +165,14 @@
 <td align="left" style="white-space: nowrap" class="style_5"><% out.print( "["  + model.exchange.subcodeList.get(i).codeRange + "]" ); %></td>
 <td align="left" width="100%" class="style_5"><% out.print( model.exchange.subcodeList.get(i).title ); %></td>
 </tr>
-<% } // end of state 2, 3, or 4 %>
+<% }// end of state 2, 3, or 4 %>
 </table>
-<% if ( model.exchange.sectionTextList != null )  { // start of state == 5 %>
+<% if ( model.exchange.state.equals("TERMINATE") ||  model.exchange.highlights )  { // start of state == 5 %>
 <pre ><span class="sectiontext"><% 	for (int i=0,l=model.exchange.sectionTextList.size(); i<l; ++i) {
 	out.print( model.highlightText(model.exchange.sectionTextList.get(i).text, model.exchange.term, "<span class=\"termtext\">", "</span>") + "<br><br>" );
 	} %></span>
 </pre>
-<% } //  end of state == 5 %>
+<% }//  end of state == 5 %>
 			<!-- END CENTER DISPLAY -->
 			</td>
 			<td valign="top" align="right" width="11px" height="100%">&nbsp;</td>

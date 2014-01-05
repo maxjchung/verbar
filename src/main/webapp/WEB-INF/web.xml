@@ -8,9 +8,6 @@
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
-  <listener>
-    <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
-  </listener>
   <servlet>
     <description></description>
     <display-name>GSearch</display-name>
@@ -36,7 +33,7 @@
     <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
     <init-param>
       <param-name>javax.ws.rs.Application</param-name>
-      <param-value>com.example.rest.HelloApplication</param-value>
+      <param-value>com.example.rest.GuidedSearch</param-value>
     </init-param>
   </servlet>
   <context-param>

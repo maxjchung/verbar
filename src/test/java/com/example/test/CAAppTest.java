@@ -3,7 +3,6 @@ package com.example.test;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.util.BitSet;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -13,7 +12,6 @@ import org.junit.Test;
 import com.example.code.CACodes;
 
 import gsearch.GSearch;
-import gsearch.ParamBitSet;
 import gsearch.exchange.Exchange;
 
 public class CAAppTest {
@@ -44,10 +42,7 @@ public class CAAppTest {
     	printExchange(exchange);
     	
        	logger.fine( "Group 0" );    
-//        assertEquals( exchange.state, 1 );
-       	ParamBitSet codesSelected = new ParamBitSet(exchange.codesAvailable.size());
-       	codesSelected.set(1);
-    	exchange = gSearch.handleRequest( codesSelected.toString(), null, null, false );
+    	exchange = gSearch.handleRequest( exchange.codesAvailable.get(1).fullFacet, null, null, false );
        	printExchange(exchange);
 
        	logger.fine( "Group 1" );    
@@ -56,9 +51,9 @@ public class CAAppTest {
         assertEquals( exchange.term, null );
         assertEquals( exchange.selectedCodesList.size(), 1 );
         assertEquals( exchange.selectedCodesList.get(0).count, 0 );
-        assertEquals( exchange.pathList, null );
-        assertEquals( exchange.subcodeList, null );
-        assertEquals( exchange.sectionTextList, null );
+        assertEquals( exchange.pathList.size(), 0 );
+        assertEquals( exchange.subcodeList.size(), 0 );
+        assertEquals( exchange.sectionTextList.size(), 0 );
 
         exchange = gSearch.handleRequest(null, "civil-0", null, false );
        	printExchange(exchange);
@@ -67,12 +62,12 @@ public class CAAppTest {
 //        assertEquals( exchange.state, 3 );
         assertEquals( exchange.path, "civil-0");
         assertEquals( exchange.term, null );
-        assertEquals( exchange.selectedCodesList, null );
+        assertEquals( exchange.selectedCodesList.size(), 0 );
         assertEquals( exchange.pathList.size(), 1 );
         assertEquals( exchange.pathList.get(0).count, 0 );
         assertEquals( exchange.subcodeList.size(), 9 );
         assertEquals( exchange.subcodeList.get(0).count, 0 );
-        assertEquals( exchange.sectionTextList, null );
+        assertEquals( exchange.sectionTextList.size(), 0 );
 
     	exchange = gSearch.handleRequest(null, "civil-0|civil-1-0", null, false );
        	printExchange(exchange);
@@ -81,15 +76,16 @@ public class CAAppTest {
 //        assertEquals( exchange.state, 5 );
         assertEquals( exchange.path, "civil-0|civil-1-0" );
         assertEquals( exchange.term, null );
-        assertEquals( exchange.selectedCodesList, null );
+        assertEquals( exchange.selectedCodesList.size(), 0 );
         assertEquals( exchange.pathList.size(), 2 );
         assertEquals( exchange.pathList.get(0).count, 0 );
-        assertEquals( exchange.subcodeList, null );
+        assertEquals( exchange.subcodeList.size(), 0 );
         // if this below fails its an indication that the comparison test is GSearch.processTerm() is broken
         assertEquals( exchange.sectionTextList.size(), 1 );
         assertEquals( exchange.sectionTextList.get(0).text.length(), 314 );
 
-    	exchange = gSearch.handleRequest( codesSelected.toString(), null, "tenant", false );
+    	exchange = gSearch.handleRequest(null, null, null, false );
+    	exchange = gSearch.handleRequest( exchange.codesAvailable.get(1).fullFacet, null, "tenant", false );
        	printExchange(exchange);
 
        	logger.fine( "Group 6" );    
@@ -98,9 +94,9 @@ public class CAAppTest {
         assertEquals( exchange.term, "tenant" );
         assertEquals( exchange.selectedCodesList.size(), 1 );
         assertEquals( exchange.selectedCodesList.get(0).count, 169 );
-        assertEquals( exchange.pathList, null );
-        assertEquals( exchange.subcodeList, null );
-        assertEquals( exchange.sectionTextList, null );
+        assertEquals( exchange.pathList.size(), 0 );
+        assertEquals( exchange.subcodeList.size(), 0 );
+        assertEquals( exchange.sectionTextList.size(), 0 );
 
     	exchange = gSearch.handleRequest( null, "civil-0", "tenant", false );
        	printExchange(exchange);
@@ -109,11 +105,11 @@ public class CAAppTest {
 //       	assertEquals( exchange.state, 3 );
         assertEquals( exchange.path, "civil-0" );
         assertEquals( exchange.term, "tenant" );
-        assertEquals( exchange.selectedCodesList, null );
+        assertEquals( exchange.selectedCodesList.size(), 0 );
         assertEquals( exchange.pathList.size(), 1 );
         assertEquals( exchange.subcodeList.size(), 9 );
         assertEquals( exchange.subcodeList.get(6).count, 57 );
-        assertEquals( exchange.sectionTextList, null );
+        assertEquals( exchange.sectionTextList.size(), 0 );
 
     	exchange = gSearch.handleRequest( null, "civil-0|civil-1-6", "tenant", false ); 
        	printExchange(exchange);
@@ -122,11 +118,11 @@ public class CAAppTest {
 //        assertEquals( exchange.state, 4 );
         assertEquals( exchange.path, "civil-0|civil-1-6" );
         assertEquals( exchange.term, "tenant" );
-        assertEquals( exchange.selectedCodesList, null );
+        assertEquals( exchange.selectedCodesList.size(), 0 );
         assertEquals( exchange.pathList.size(), 2 );
         assertEquals( exchange.subcodeList.size(), 4 );
         assertEquals( exchange.subcodeList.get(1).count, 36 );
-        assertEquals( exchange.sectionTextList, null );
+        assertEquals( exchange.sectionTextList.size(), 0 );
 
     	exchange = gSearch.handleRequest(null, "civil-0|civil-1-6|civil-2-1", "tenant", false );
        	printExchange(exchange);
@@ -135,11 +131,11 @@ public class CAAppTest {
 //        assertEquals( exchange.state , 4 );
         assertEquals( exchange.path, "civil-0|civil-1-6|civil-2-1" );
         assertEquals( exchange.term, "tenant" );
-        assertEquals( exchange.selectedCodesList, null );
+        assertEquals( exchange.selectedCodesList.size(), 0 );
         assertEquals( exchange.pathList.size(),  3);
         assertEquals( exchange.subcodeList.size(), 6 );
         assertEquals( exchange.subcodeList.get(2).count , 6 );
-        assertEquals( exchange.sectionTextList, null );
+        assertEquals( exchange.sectionTextList.size(), 0 );
 
     	exchange = gSearch.handleRequest(null, "civil-0|civil-1-6|civil-2-1|civil-3-2", "tenant", false );
        	printExchange(exchange);
@@ -148,11 +144,11 @@ public class CAAppTest {
 //        assertEquals( exchange.state , 4 );
         assertEquals( exchange.path, "civil-0|civil-1-6|civil-2-1|civil-3-2" );
         assertEquals( exchange.term, "tenant" );
-        assertEquals( exchange.selectedCodesList, null );
+        assertEquals( exchange.selectedCodesList.size(), 0 );
         assertEquals( exchange.pathList.size(),  4);
         assertEquals( exchange.subcodeList.size(), 3 );
         assertEquals( exchange.subcodeList.get(1).count , 3 );
-        assertEquals( exchange.sectionTextList, null );
+        assertEquals( exchange.sectionTextList.size(), 0 );
 
     	exchange = gSearch.handleRequest( null, "civil-0|civil-1-6|civil-2-1|civil-3-2|civil-4-1", "tenant", false );
 
@@ -162,9 +158,9 @@ public class CAAppTest {
 //        assertEquals( exchange.state , 5 );
         assertEquals( exchange.path, "civil-0|civil-1-6|civil-2-1|civil-3-2|civil-4-1" );
         assertEquals( exchange.term, "tenant" );
-        assertEquals( exchange.selectedCodesList, null );
+        assertEquals( exchange.selectedCodesList.size(), 0 );
         assertEquals( exchange.pathList.size(),  5);
-        assertEquals( exchange.subcodeList, null );
+        assertEquals( exchange.subcodeList.size(), 0 );
         // if this below fails its an indication that the comparison test is GSearch.processTerm() is broken
         assertEquals( exchange.sectionTextList.size(), 11 );
         assertEquals( exchange.sectionTextList.get(3).text.length() , 1868 );
@@ -176,9 +172,9 @@ public class CAAppTest {
 //        assertEquals( exchange.state , 5 );
         assertEquals( exchange.path, "civil-0|civil-1-6|civil-2-1|civil-3-2|civil-4-1" );
         assertEquals( exchange.term, "\"responsibility of the owner\"" );
-        assertEquals( exchange.selectedCodesList, null );
+        assertEquals( exchange.selectedCodesList.size(), 0 );
         assertEquals( exchange.pathList.size(),  5);
-        assertEquals( exchange.subcodeList, null );
+        assertEquals( exchange.subcodeList.size(), 0 );
         // if this below fails its an indication that the comparison test is GSearch.processTerm() is broken
         assertEquals( exchange.sectionTextList.size(), 11 );
         // This is testing that the "No Terms Found." is appearing.

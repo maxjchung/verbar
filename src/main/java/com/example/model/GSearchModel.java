@@ -10,41 +10,15 @@ public class GSearchModel {
 	public boolean allSelected;
 
 	public GSearchModel(
-		String currentterm, 
-		String newterm, 
-		String currentpath, 
-		String newpath, 
 		boolean selectall, 
 		boolean unselectall, 
-		boolean allselected, 
-		boolean highlights, 
-		boolean toggle
+		boolean allselected
 	) throws IOException {
-
-		this.exchange = new Exchange();
-		
-		// determine if the term has changed ..
-		String term = currentterm;
-		if ( !currentterm.equalsIgnoreCase(newterm) ) {
-			term = newterm;
-		}
-	
-		// determine if there is a change path request ..
-		String path = currentpath;
-		if ( !newpath.isEmpty() ) {
-			path = newpath;
-		}
-		
 		// set an stateflag for the view (Search.jsp)
 		if ( selectall == true || (allselected == true && unselectall != true ) ) {
 			allSelected = true;
 		}
 
-		if ( toggle ) highlights = !highlights;
-		
-		exchange.term = term;
-		exchange.path = path;
-		exchange.highlights = highlights;
 	}
 
 	/*
