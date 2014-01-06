@@ -14,6 +14,7 @@
 <!-- full page table -->
 <form method="post">
 <input type="hidden" name="currentstate" value="<% out.print( model.exchange.state ); %>" />
+<input type="hidden" name="currentbits" value="<% out.print( model.exchange.bits ); %>" />
 <input type="hidden" name="currentpath" value="<% out.print( model.exchange.path ); %>" />
 <input type="hidden" name="currentterm" value="<% out.print( model.exchange.term ); %>" />
 <input type="hidden" name="highlights" value="<% out.print( model.exchange.highlights?"true":"false" ); %>" />
@@ -45,7 +46,7 @@
 			<span style="padding-bottom: 0pt; padding-top: 0pt;" class="paragraph_style_2">&nbsp;</span>
 			<br>
 			<hr>
-			<input type="text" name="newterm" id="myInput" style="width: 145px;" class="style_4" value="" />
+			<input type="text" name="newterm" id="myInput" style="width: 145px;" class="style_4" value="<% out.print( model.exchange.term ); %>" />
 			<br><br style="line-height: 8px" >
 			<input type="submit" value="Search" style="width: 150px;" class="style_4" /><br>
 			<hr>
@@ -101,7 +102,7 @@
 <% for (int i=0, l=model.exchange.selectedCodesList.size(); i<l; ++i) { %>
 <tr align="left">
 <td style="white-space: nowrap; text-align: right;" class="style_5">
-<% if ( !model.exchange.term.isEmpty() ) { 
+<% if ( model.exchange.term != null ) { 
 		out.print( "" + model.exchange.selectedCodesList.get(i).count + " IN ");
 	} else {
 		out.print( "&nbsp;");
@@ -145,7 +146,7 @@
 <%  for (int i=0, l=model.exchange.subcodeList.size(); i < l; ++i) { %>
 <tr>
 <td style="white-space: nowrap; text-align: right;" class="style_5">
-<% if ( !model.exchange.term.isEmpty() ) { 
+<% if ( model.exchange.term != null ) { 
 		out.print( "" + model.exchange.subcodeList.get(i).count + " IN ");
 	} else {
 		out.print( "&nbsp;");

@@ -42,7 +42,7 @@ public class CAAppTest {
     	printExchange(exchange);
     	
        	logger.fine( "Group 0" );    
-    	exchange = gSearch.handleRequest( exchange.codesAvailable.get(1).fullFacet, null, null, false );
+    	exchange = gSearch.handleRequest( exchange.codesAvailable.get(1).fullFacet+"|", null, null, false );
        	printExchange(exchange);
 
        	logger.fine( "Group 1" );    
@@ -85,7 +85,7 @@ public class CAAppTest {
         assertEquals( exchange.sectionTextList.get(0).text.length(), 314 );
 
     	exchange = gSearch.handleRequest(null, null, null, false );
-    	exchange = gSearch.handleRequest( exchange.codesAvailable.get(1).fullFacet, null, "tenant", false );
+    	exchange = gSearch.handleRequest( exchange.codesAvailable.get(1).fullFacet+"|", null, "tenant", false );
        	printExchange(exchange);
 
        	logger.fine( "Group 6" );    

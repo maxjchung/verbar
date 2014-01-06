@@ -31,7 +31,7 @@
         <dependency>
         	<groupId>gsearch</groupId>
         	<artifactId>gsearch</artifactId>
-        	<version>0.1.0</version>
+        	<version>0.1.1</version>
         </dependency>
         <dependency>
         	<groupId>codesparser</groupId>
@@ -68,6 +68,11 @@
         	<groupId>org.jboss.resteasy</groupId>
         	<artifactId>resteasy-client</artifactId>
         	<version>3.0.6.Final</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.apache.commons</groupId>
+        	<artifactId>commons-lang3</artifactId>
+        	<version>3.2</version>
         </dependency>
     </dependencies>
 

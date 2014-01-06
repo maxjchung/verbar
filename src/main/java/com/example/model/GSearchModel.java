@@ -7,6 +7,7 @@ import gsearch.exchange.*;
 public class GSearchModel {
 
 	public Exchange exchange;
+
 	public boolean allSelected;
 
 	public GSearchModel(
@@ -20,7 +21,6 @@ public class GSearchModel {
 		}
 
 	}
-
 	/*
 	 * Definitely need to fix this up ... 
 	 */

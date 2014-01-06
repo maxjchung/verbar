@@ -12,6 +12,8 @@ import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import com.example.model.GSearchModel;
 
 /**
@@ -71,6 +73,7 @@ public class GSearch extends HttpServlet {
 		// The purpose of this class is to retrieve all the parameters that
 		// are stored in the view and put them into the exchange structure
 		String currentstate;
+		String currentbits;
 		String currentterm;
 		String currentpath;
 		String newterm;
@@ -83,18 +86,21 @@ public class GSearch extends HttpServlet {
 		boolean toggle;
 		
 		currentstate = request.getParameter("currentstate");
+		if ( currentstate == null ) currentstate = "";
 		
+		currentbits = request.getParameter("currentbits");
+
 		currentterm = request.getParameter("currentterm");
-//		if ( currentterm == null ) currentterm = "";
+		if ( currentterm == null ) currentterm = "";
 
 		currentpath = request.getParameter("currentpath");
 		if ( currentpath == null ) currentpath = "";
 
-		String path = request.getParameter("newpath");
-//		if ( newpath == null ) newpath = "";
+		newpath = request.getParameter("newpath");
+		if ( newpath == null ) newpath = "";
 		
-		String term = request.getParameter("newterm");
-//		if ( newterm == null ) newterm = "";
+		newterm = request.getParameter("newterm");
+		if ( newterm == null ) newterm = "";
 
 		browse = request.getParameter("browse")==null?false:true;
 
@@ -119,12 +125,37 @@ public class GSearch extends HttpServlet {
 			allselected 
 		);
 
+		String term = currentterm;
+		if ( !currentterm.equalsIgnoreCase(newterm) ) {
+			term = newterm;
+			// special case to spoof browse
+			if ( !newterm.isEmpty() && currentstate.equals("START")  ) {
+				browse = true;
+			}
+		}
+	
+		// determine if there is a change path request ..
+		boolean changepath = false;
+		String path = currentpath;
+		if ( !newpath.isEmpty() ) {
+			path = newpath;
+			changepath = true;
+		}
+		
+		// or if we want to simulate one due to selectall 
+		if ( selectall == true  ) browse = true;
+		
+		if ( toggle ) highlights = !highlights;
+
 		// ok, lets keep a string of 
 		String select = null;
 		if ( selectall || (allselected && !unselectall) ) {
 			select  = "all";
-		} else if ( browse ) {
-			if ( currentstate.equals("START") ) {
+		} else if ( !unselectall ) {
+			// if all not selected, then copy the current state
+			// but if the user clicked unselect all, then leave the array empty
+			if ( currentstate.equals("SELECT") && browse==false ) select = currentbits;
+			else if ( browse==false || currentstate.equals("START") ) {
 				StringBuilder selectedCodes = new StringBuilder();
 				Map<String, String[]> pMap = request.getParameterMap();
 				for ( String key: pMap.keySet() ) {
@@ -134,7 +165,7 @@ public class GSearch extends HttpServlet {
 				} 
 				select = selectedCodes.toString();
 				if ( select.isEmpty() ) select = null;
-			} else{
+			} else if ( browse==true && !currentstate.equals("START")) {
 				path = null;
 			}
 		}
@@ -148,9 +179,11 @@ public class GSearch extends HttpServlet {
 				.request(MediaType.APPLICATION_XML).get();
 
 		Exchange exchange = response.readEntity(Exchange.class);
+		response.close();
 		
 		if ( exchange.path == null ) exchange.path = "";
 		if ( exchange.term == null ) exchange.term = "";
+		exchange.term = StringEscapeUtils.escapeXml(exchange.term);
 
 		model.exchange = exchange;
 		logger.fine("Path = " + model.exchange.path + ": Term = " + model.exchange.term + ": isAllSelected = " + model.allSelected );
